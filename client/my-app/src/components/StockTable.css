@@ -1,0 +1,54 @@
+/* src/components/StockTable.css */
+.stock-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 16px;
+    text-align: left;
+  }
+  
+  .stock-table th,
+  .stock-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  .stock-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+  }
+  
+  .stock-table-body tr {
+    transition: background-color 0.5s ease;
+  }
+  
+  .stock-table-body tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .stock-table-body tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .stock-table-body td {
+    position: relative;
+  }
+  
+  .stock-table-body td::after {
+    content: attr(title);
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: max-content;
+    background: #333;
+    color: #fff;
+    padding: 2px 5px;
+    font-size: 12px;
+    display: none;
+    z-index: 1;
+  }
+  
+  .stock-table-body td:hover::after {
+    display: block;
+  }
+  
