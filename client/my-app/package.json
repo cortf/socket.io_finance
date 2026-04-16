@@ -5,6 +5,7 @@
   "dependencies": {
     "@glideapps/glide-data-grid": "^6.0.3",
     "@tanstack/react-table": "^8.17.3",
+    "@tanstack/react-virtual": "^3.13.23",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -29,7 +30,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lhci": "npm run build && lhci autorun"
   },
   "eslintConfig": {
     "extends": [
@@ -50,6 +52,7 @@
     ]
   },
   "devDependencies": {
+    "@lhci/cli": "^0.15.1",
     "@types/lodash": "^4.17.5"
   }
 }

@@ -10,7 +10,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
         origin: "http://localhost:3000",
-        methods: ["GET", "POST"]
+        methods: ["GET", "POST"],
     }
 });
 
@@ -55,7 +55,7 @@ io.on('connection', (socket) => {
     });
 });
 
-server.listen(5000, () => {
-    console.log('Server listening on port 5000');
+server.listen(5001, () => {
+    console.log('Server listening on port 5001');
     connectToFinnhub(); // Initial connection
 });

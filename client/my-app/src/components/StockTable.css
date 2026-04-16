@@ -1,54 +1,180 @@
 /* src/components/StockTable.css */
+
+/* =============================================
+   Virtual scroll container
+   ============================================= */
+.virtual-scroll-container {
+  overflow-y: auto;
+  position: relative;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+}
+
+/* =============================================
+   Table base
+   ============================================= */
 .stock-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    font-size: 16px;
-    text-align: left;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  text-align: left;
+  table-layout: fixed;
+}
+
+/* Sticky header — stays pinned during virtual scroll */
+.stock-table-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #f4f4f4;
+}
+
+.stock-table th {
+  padding: 10px 14px;
+  font-weight: 600;
+  font-size: 13px;
+  border-bottom: 2px solid #d0d0d0;
+  white-space: nowrap;
+  color: #333;
+  letter-spacing: 0.02em;
+}
+
+.stock-table td {
+  padding: 0 14px;
+  border-bottom: 1px solid #eee;
+  /* required so ::after flash overlay is positioned correctly */
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  height: 40px;
+  line-height: 40px;
+  color: #222;
+}
+
+/* Alternating row background */
+.stock-table-body .stock-row:nth-child(even) td {
+  background-color: #fafafa;
+}
+
+/* =============================================
+   GPU-optimized flash animation
+   Animates `opacity` on a ::after pseudo-element
+   overlay — this runs on the compositor thread
+   and does NOT trigger layout or paint.
+   ============================================= */
+@keyframes fade-flash {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+/* Common overlay base */
+.flash-up td::after,
+.flash-down td::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* GPU hint — compositor handles this animation */
+  will-change: opacity;
+  animation: fade-flash 0.9s ease-out forwards;
+}
+
+/* Green overlay for price increase */
+.flash-up td::after {
+  background: rgba(16, 185, 129, 0.38);
+}
+
+/* Red overlay for price decrease */
+.flash-down td::after {
+  background: rgba(239, 68, 68, 0.38);
+}
+
+/* =============================================
+   Row count / status bar
+   ============================================= */
+.row-count {
+  font-size: 12px;
+  color: #777;
+  text-align: right;
+  margin: 0 0 6px;
+  padding: 0;
+}
+
+/* =============================================
+   Table wrapper
+   ============================================= */
+.table-wrapper {
+  width: 100%;
+}
+
+/* =============================================
+   Skeleton loading
+   Animates `opacity` — GPU-compositor thread,
+   no layout or paint triggered.
+   ============================================= */
+.skeleton-table-container {
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.skeleton-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  table-layout: fixed;
+}
+
+.skeleton-table th {
+  padding: 10px 14px;
+  font-weight: 600;
+  font-size: 13px;
+  border-bottom: 2px solid #d0d0d0;
+  color: #aaa;
+  background: #f4f4f4;
+}
+
+.skeleton-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #eee;
+  height: 40px;
+}
+
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 0.35; }
+  50%       { opacity: 0.85; }
+}
+
+.skeleton-cell {
+  height: 14px;
+  border-radius: 3px;
+  background: #d8d8d8;
+  will-change: opacity;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+/* Stagger pulse so rows animate offset from each other */
+.skeleton-row:nth-child(1) .skeleton-cell { animation-delay: 0.00s; }
+.skeleton-row:nth-child(2) .skeleton-cell { animation-delay: 0.10s; }
+.skeleton-row:nth-child(3) .skeleton-cell { animation-delay: 0.20s; }
+.skeleton-row:nth-child(4) .skeleton-cell { animation-delay: 0.30s; }
+.skeleton-row:nth-child(5) .skeleton-cell { animation-delay: 0.40s; }
+.skeleton-row:nth-child(6) .skeleton-cell { animation-delay: 0.50s; }
+.skeleton-row:nth-child(7) .skeleton-cell { animation-delay: 0.60s; }
+.skeleton-row:nth-child(8) .skeleton-cell { animation-delay: 0.70s; }
+
+/* =============================================
+   Respect prefers-reduced-motion
+   ============================================= */
+@media (prefers-reduced-motion: reduce) {
+  .flash-up td::after,
+  .flash-down td::after {
+    animation: none;
+    opacity: 0;
   }
-  
-  .stock-table th,
-  .stock-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
+
+  .skeleton-cell {
+    animation: none;
+    opacity: 0.5;
   }
-  
-  .stock-table th {
-    background-color: #f4f4f4;
-    font-weight: bold;
-  }
-  
-  .stock-table-body tr {
-    transition: background-color 0.5s ease;
-  }
-  
-  .stock-table-body tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-  
-  .stock-table-body tr:hover {
-    background-color: #f1f1f1;
-  }
-  
-  .stock-table-body td {
-    position: relative;
-  }
-  
-  .stock-table-body td::after {
-    content: attr(title);
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: max-content;
-    background: #333;
-    color: #fff;
-    padding: 2px 5px;
-    font-size: 12px;
-    display: none;
-    z-index: 1;
-  }
-  
-  .stock-table-body td:hover::after {
-    display: block;
-  }
-  
+}
